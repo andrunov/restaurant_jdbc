@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +20,6 @@ public class JacksonObjectMapper  extends ObjectMapper {
     }
 
     private JacksonObjectMapper() {
-        registerModule(new Hibernate5Module());
 
         /*customise LocalDateTime serialise-deserialize*/
         SimpleModule customModule = new SimpleModule("customModule");

@@ -7,11 +7,6 @@ import java.util.List;
  */
 public class Restaurant extends BaseEntity {
 
-    public static final String GET_ALL = "Restaurant.getAll";
-    public static final String GET_WITH_MENU_LISTS = "Restaurant.getWithMenuLists";
-    public static final String GET_WITH_ORDERS = "Restaurant.getWithOrders";
-    public static final String DELETE = "Restaurant.delete";
-
     /*name of restaurant*/
     private String name;
 
