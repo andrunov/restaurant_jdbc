@@ -1,8 +1,6 @@
 package ru.agorbunov.restaurant.to;
 
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -13,11 +11,10 @@ public class UserTo implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    @NotBlank
+    @NotNull
     private String name;
 
-    @Email
-    @NotBlank
+    @NotNull
     private String email;
 
     @Size(min = 5, max = 20, message = "error.password")

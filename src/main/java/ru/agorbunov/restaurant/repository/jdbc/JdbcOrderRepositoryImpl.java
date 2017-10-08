@@ -1,7 +1,6 @@
 package ru.agorbunov.restaurant.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -11,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.agorbunov.restaurant.Profiles;
 import ru.agorbunov.restaurant.model.Dish;
 import ru.agorbunov.restaurant.model.Order;
 import ru.agorbunov.restaurant.model.Restaurant;
@@ -32,7 +30,6 @@ import java.util.Map;
  * announced as abstract, consist inner classes for
  * customise for different databases
  */
-//// TODO: 24.02.2017 remove profiles before production
 @Transactional(readOnly = true)
 public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
     private static final BeanPropertyRowMapper<Order> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Order.class);
@@ -57,18 +54,16 @@ public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
     }
 
     /*Customise repository for Postgres*/
-    @Repository
-    @Profile(Profiles.POSTGRES)
-    public static class Java8JdbcOrderRepositoryImpl extends JdbcOrderRepositoryImpl<LocalDateTime> {
-        @Override
-        protected LocalDateTime toDbDateTime(LocalDateTime ldt) {
-            return ldt;
-        }
-    }
+//    @Repository
+//    public static class Java8JdbcOrderRepositoryImpl extends JdbcOrderRepositoryImpl<LocalDateTime> {
+//        @Override
+//        protected LocalDateTime toDbDateTime(LocalDateTime ldt) {
+//            return ldt;
+//        }
+//    }
 
     /*Customise repository for HSQLDB*/
     @Repository
-    @Profile(Profiles.HSQLDB)
     public static class TimestampJdbcOrderRepositoryImpl extends JdbcOrderRepositoryImpl<Timestamp> {
         @Override
         protected Timestamp toDbDateTime(LocalDateTime ldt) {

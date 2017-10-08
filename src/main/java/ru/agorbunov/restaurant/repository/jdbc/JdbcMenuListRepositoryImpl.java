@@ -1,7 +1,6 @@
 package ru.agorbunov.restaurant.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,7 +9,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import ru.agorbunov.restaurant.Profiles;
 import ru.agorbunov.restaurant.model.Dish;
 import ru.agorbunov.restaurant.model.MenuList;
 import ru.agorbunov.restaurant.repository.MenuListRepository;
@@ -25,7 +23,6 @@ import java.util.List;
  * announced as abstract, consist inner classes for
  * customise for different databases
  */
-//// TODO: 17.05.2017 remove profiles before production
 @Transactional(readOnly = true)
 public abstract class JdbcMenuListRepositoryImpl<T> implements MenuListRepository {
     private static final BeanPropertyRowMapper<MenuList> ROW_MAPPER = BeanPropertyRowMapper.newInstance(MenuList.class);
@@ -51,18 +48,16 @@ public abstract class JdbcMenuListRepositoryImpl<T> implements MenuListRepositor
     }
 
     /*Customise repository for Postgres*/
-    @Repository
-    @Profile(Profiles.POSTGRES)
-    public static class Java8JdbcMenuListRepositoryImpl extends JdbcMenuListRepositoryImpl<LocalDateTime> {
-        @Override
-        protected LocalDateTime toDbDateTime(LocalDateTime ldt) {
-            return ldt;
-        }
-    }
+//    @Repository
+//    public static class Java8JdbcMenuListRepositoryImpl extends JdbcMenuListRepositoryImpl<LocalDateTime> {
+//        @Override
+//        protected LocalDateTime toDbDateTime(LocalDateTime ldt) {
+//            return ldt;
+//        }
+//    }
 
     /*Customise repository for HSQLDB*/
     @Repository
-    @Profile(Profiles.HSQLDB)
     public static class TimestampJdbcMenuListRepositoryImpl extends JdbcMenuListRepositoryImpl<Timestamp> {
         @Override
         protected Timestamp toDbDateTime(LocalDateTime ldt) {

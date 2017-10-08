@@ -1,34 +1,18 @@
-package ru.agorbunov.restaurant.model.jpa;
+package ru.agorbunov.restaurant.model;
 
-import ru.agorbunov.restaurant.model.Dish;
-import ru.agorbunov.restaurant.model.Order;
-
-import javax.persistence.*;
-
-// TODO: 16.05.2017 remove from jdbs version
 /**
  * Entity represents many-to0many relationship between Order and Dish
  * with one additional field - quantity of dishes
  */
-@Entity
-@Table(name="orders_dishes")
-@IdClass(OrdersDishesId.class)
 public class OrdersDishes {
 
     /*represents Order*/
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     /*represents Dish*/
-    @Id
-    @ManyToOne
-    @JoinColumn(name = "dish_id", referencedColumnName = "id")
     private Dish dish;
 
     /*represents quantity of dishes*/
-    @Column(name = "dish_quantity", nullable = false)
     private int dishQuantity;
 
     public int getDishQuantity() {

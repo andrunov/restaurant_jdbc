@@ -1,24 +1,10 @@
 package ru.agorbunov.restaurant.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
 import java.util.List;
 
 /**
  * Class represents restaurant
  */
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@SuppressWarnings("JpaQlInspection")
-@NamedQueries({
-        @NamedQuery(name = Restaurant.GET_ALL, query = "SELECT r from Restaurant r"),
-        @NamedQuery(name = Restaurant.GET_WITH_MENU_LISTS, query = "SELECT r from Restaurant r join fetch r.menuLists WHERE r.id=:id"),
-        @NamedQuery(name = Restaurant.GET_WITH_ORDERS, query = "SELECT r from Restaurant r join fetch r.orders WHERE r.id=:id"),
-        @NamedQuery(name = Restaurant.DELETE, query = "DELETE FROM Restaurant r WHERE r.id=:id")
-})
-@Entity
-@Table(name = "restaurants")
 public class Restaurant extends BaseEntity {
 
     public static final String GET_ALL = "Restaurant.getAll";
@@ -27,19 +13,15 @@ public class Restaurant extends BaseEntity {
     public static final String DELETE = "Restaurant.delete";
 
     /*name of restaurant*/
-    @Column(nullable = false)
     private String name;
 
     /*address of restaurant*/
-    @Column(nullable = false)
     private String address;
 
     /*menuLists of restaurant*/
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "restaurant")
     private List<MenuList> menuLists;
 
     /*orders ordered in the restaurant  */
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "restaurant")
     private  List<Order> orders;
 
     public Restaurant() {
