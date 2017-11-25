@@ -32,3 +32,24 @@
     background-color: #c6fbc2;
     border: 1px solid #9feba6;
 }
+
+tr.accepted {
+    font-weight: bold;
+    color: mediumblue;
+}
+
+
+.preparing {
+    font-weight: bold;
+    color: firebrick;
+}
+
+.ready {
+    font-weight: bold;
+    color: green;
+}
+
+.finished {
+    color: dimgray;
+}
+

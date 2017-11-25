@@ -20,6 +20,7 @@ import ru.agorbunov.restaurant.model.User;
 import ru.agorbunov.restaurant.service.*;
 import ru.agorbunov.restaurant.to.UserTo;
 import ru.agorbunov.restaurant.util.UserUtil;
+import ru.agorbunov.restaurant.util.ValidationUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -122,7 +123,10 @@ public class RootController {
     @GetMapping(value = "/orders")
     public String orders(Model model) {
         log.info("get /orders");
-        model.addAttribute("currentUser",CurrentEntities.getCurrentUser());
+        /*refresh currentUser from database for refresh total orders amount in jsp*/
+        User user = userService.get(CurrentEntities.getCurrentUser().getId());
+        CurrentEntities.setCurrentUser(user);
+        model.addAttribute("currentUser",user);
         return "orders";
     }
 
@@ -157,6 +161,18 @@ public class RootController {
         return "redirect:/orders_dishes";
     }
 
+    /*get id parameter to set current order, get restaurantId parameter to set current restaurant
+    * and redirect to user_order_details.jsp*/
+    @GetMapping(value = "/user_order_details/{id}&{restaurantId}")
+    public String userOrderDetails(@PathVariable("id") int id,
+                                            @PathVariable("restaurantId") int restaurantId){
+        log.info("get /user_order_details/{id}&{restaurantId}");
+        User user = CurrentEntities.getCurrentUser();
+        CurrentEntities.setCurrentRestaurant(restaurantService.get(restaurantId));
+        CurrentEntities.setCurrentOrder(orderService.get(id,user.getId(),restaurantId));
+        return "redirect:/user_order_details";
+    }
+
     /*get userId parameter to set current userTo and id parameter to set current order
     * and redirect to orders_dishes.jsp*/
     @GetMapping(value = "/orders_dishes_by_user/{id}&{userId}")
@@ -168,6 +184,19 @@ public class RootController {
         Restaurant restaurant = CurrentEntities.getCurrentRestaurant();
         CurrentEntities.setCurrentOrder(orderService.get(id,user.getId(),restaurant.getId()));
         return "redirect:/orders_dishes";
+    }
+
+    /*return user_order_details.jsp and display dishes of current order of current userTo and current restaurant*/
+    @GetMapping(value = "/user_order_details")
+    public String userOrderDetails(Model model) {
+        log.info("get /user_order_details");
+        model.addAttribute("currentUser",CurrentEntities.getCurrentUser());
+        model.addAttribute("restaurant",CurrentEntities.getCurrentRestaurant());
+        model.addAttribute("localDate",CurrentEntities.getCurrentOrder()
+                .getDateTime().toString().replace('T', ' ').substring(0,16));
+        model.addAttribute("totalPrice",CurrentEntities.getCurrentOrder().getTotalPrice());
+        model.addAttribute("orderStatus",CurrentEntities.getCurrentOrder().getStatus());
+        return "user_order_details";
     }
 
     /*return orders_dishes.jsp and display dishes of current order of current userTo and current restaurant*/
@@ -221,6 +250,7 @@ public class RootController {
             return "profile";
         } else {
             User user = UserUtil.updateFromTo(AuthorizedUser.get().getLoggedUser(),userTo);
+            ValidationUtil.checkModificationAllowed(user.getId());
             userService.save(user);
             AuthorizedUser.get().setLoggedUser(user);
             status.setComplete();

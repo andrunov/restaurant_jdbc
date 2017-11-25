@@ -26,9 +26,7 @@
                     <tr>
                         <th><fmt:message key="restaurants.name"/></th>
                         <th><fmt:message key="restaurants.address"/></th>
-                        <th><fmt:message key="menuLists.title"/></th>
-                        <th><fmt:message key="common.update"/></th>
-                        <th><fmt:message key="common.delete"/></th>
+                        <th width="26%"><fmt:message key="restaurants.executions"/></th>
                     </tr>
                     </thead>
                 </table>

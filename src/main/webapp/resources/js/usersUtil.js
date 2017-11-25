@@ -31,7 +31,7 @@ $(function () {
             "dataSrc": ""
         },
         "paging": false,
-        "searching": false,
+        "searching": true,
         "info": true,
         "columns": [
             /*add column with image depending of Role and Enabled*/
@@ -95,19 +95,7 @@ $(function () {
                 "orderable": false,
                 "defaultContent": "",
                 "className": "dt-center",
-                "render": linkBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderEditBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderDeleteBtn
+                "render": executionsBtns
             }
         ],
         "order": [
@@ -139,19 +127,17 @@ $(function () {
     });
 });
 
-/*function for link to orders.jsp*/
-function linkBtn(data, type, row) {
+/*function for draw manage buttons*/
+function executionsBtns(data, type, row) {
     if (type == 'display') {
-        return '<a class="btn btn-primary" onclick=location.href="'+ goOrdersUrl + row.id +'">' +
-            '<span class="glyphicon glyphicon-list-alt"></span></a>';
-    }
-}
-
-/*render function draw button for update row*/
-function renderEditBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-primary" onclick="updateRow(' + row.id + ');">' +
-            '<span class="glyphicon glyphicon-edit"></span></a>';
+        if (row.hasOrders) {
+            return '<div class="btn-group pull-left"><a class="btn btn-primary pull-left" onclick=location.href="' + goOrdersUrl + row.id + '">' + i18n["orders.title"] + '</a>' +
+                '<a class="btn btn-success" onclick="updateRow(' + row.id + ');">' + i18n["common.update"] + '</a></div>';
+        }else {
+            return '<div class="btn-group pull-left"><a class="btn btn-primary" onclick=location.href="' + goOrdersUrl + row.id + '">' + i18n["orders.title"] + '</a>' + " "+
+                '<a class="btn btn-success" onclick="updateRow(' + row.id + ');">' + i18n["common.update"] + '</a>' +
+                '<a class="btn btn-danger" onclick="deleteRow(' + row.id + ');">' + i18n["common.delete"] + '</a></div>';
+        }
     }
 }
 

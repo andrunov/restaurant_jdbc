@@ -7,13 +7,6 @@
  *represents orders, and server*/
 var ajaxUrl = '/ajax/orders/';
 
-/*url for exchange JSON data between main form DataTable (id="ordersDT")
- *represents orders, and server, using filter by status*/
-var ajaxUrlWithFilter = '/ajax/orders/filterByStatus/';
-
-var ajaxUrlWithDateFilter = '/ajax/orders/filterByDate/';
-
-
 /*url use only for create new Order*/
 var ajaxUrlCreateNew = '/ajax/orders/create';
 
@@ -28,6 +21,9 @@ var ajaxDishesUrl = '/ajax/dishes/byMenuList/';
 
 /*url for link to orders_dishes.jsp*/
 var goOrdersDishes = '/orders_dishes/';
+
+/*url for link to menuLists.jsp*/
+var goMenuLists = '/menuLists/';
 
 /*url for redirect to orders_dishes.jsp after POST method*/
 var redirectOrdersDishes = 'orders_dishes';
@@ -112,7 +108,7 @@ function ordersDataTableInit() {
             {
                 "data": "restaurant",
                 "render": function (date, type, row) {
-                    return (date.name +', '+ date.address);
+                        return '<a href="' + goMenuLists + date.id + '">' + date.name + ', ' + date.address + '</a>';
                 }
             },
             {
@@ -125,19 +121,7 @@ function ordersDataTableInit() {
                 "orderable": false,
                 "defaultContent": "",
                 "className": "dt-center",
-                "render": linkBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderEditBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderDeleteBtn
+                "render": executionsBtns
             }
         ],
         "order": [
@@ -146,7 +130,18 @@ function ordersDataTableInit() {
                 "asc"
             ]
         ],
-        "createdRow": "",
+        /*customize row style depending of Status*/
+        "createdRow": function (row, data, dataIndex) {
+            if (data.status==="ACCEPTED") {
+                $(row).addClass("accepted");
+            }else if (data.status==="PREPARING") {
+                $(row).addClass("preparing");
+            }else if (data.status==="READY") {
+                $(row).addClass("ready");
+            }else if (data.status==="FINISHED") {
+                $(row).addClass("finished");
+            }
+        },
         "initComplete": makeEditable
     });
 }
@@ -319,16 +314,17 @@ $(function () {
     });
 });
 
-function updateMenuListTable(enabled) {
-    menuListDataTableInit(currentRestaurantId,enabled)
+/*function for draw manage buttons*/
+function executionsBtns(data, type, row) {
+    if (type == 'display') {
+        return '<div class="btn-group pull-left"><a class="btn btn-primary" onclick=location.href="' + goOrdersDishes + row.id + '&' + row.restaurant.id + '">' + i18n["common.details"] + '</a>' +
+            '<a class="btn btn-success" onclick="updateRow(' + row.id + ',' + row.restaurant.id + ');">' + i18n["common.status"] + '</a>' +
+            '<a class="btn btn-danger" onclick="deleteRow(' + row.id + ',' + row.restaurant.id + ');">' + i18n["common.delete"] + '</a></div>';
+    }
 }
 
-/*function for link to orders_dishes.jsp*/
-function linkBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-primary" onclick=location.href="' +goOrdersDishes + row.id +'&'+  row.restaurant.id+'">' +
-            '<span class="glyphicon glyphicon-list-alt"></span></a>';
-    }
+function updateMenuListTable(enabled) {
+    menuListDataTableInit(currentRestaurantId,enabled)
 }
 
 /*function for begin procedure of order addition
@@ -342,8 +338,7 @@ function addOrder() {
 function selectRestaurantBtn(data, type, row) {
     if (type == 'display') {
         restaurantTitle = row.name+", "+row.address;
-        return '<a class="btn btn-primary" onclick="openMenuListWindow(' + row.id +',\''+ restaurantTitle +'\');">' +
-            '<span class="glyphicon glyphicon-ok"></span></a>';
+        return '<a class="btn btn-primary" onclick="openMenuListWindow(' + row.id +',\''+ restaurantTitle +'\');">' +  i18n["common.select"] +'</a>';
     }
 }
 
@@ -375,8 +370,7 @@ function openMenuListWindow(id,restaurantTitle) {
 function selectMenuListBtn(data, type, row) {
     if (type == 'display') {
         menuListTitle = row.description +", "+row.dateTime;
-        return '<a class="btn btn-primary" onclick="openDishWindow('+row.id+',\''+menuListTitle+'\');">' +
-            '<span class="glyphicon glyphicon-ok"></span></a>';
+        return '<a class="btn btn-primary" onclick="openDishWindow('+row.id+',\''+menuListTitle+'\');">' +  i18n["common.select"] +'</a>';
     }
 }
 
@@ -438,14 +432,6 @@ function getRequestParam(arr) {
     return "dishIds=" + dishIds + "&totalPrice="+totalPrice.toFixed(2);
 }
 
-/*render function draw button for update row*/
-function renderEditBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-primary" onclick="updateRow(' + row.id +','+  row.restaurant.id+');">' +
-            '<span class="glyphicon glyphicon-edit"></span></a>';
-    }
-}
-
 /*method to update row with new DataTime and Status*/
 function updateRow(id,restaurantId) {
     //fill modal form with data and open it
@@ -462,14 +448,6 @@ function updateRow(id,restaurantId) {
         });
         $('#editRow').modal();
     });
-}
-
-/*render function draw button for delete row*/
-function renderDeleteBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-danger" onclick="deleteRow(' + row.id +','+  row.restaurant.id+');">'+
-            '<span class="glyphicon glyphicon-remove-circle"></span></a>';
-    }
 }
 
 /*method to delete row

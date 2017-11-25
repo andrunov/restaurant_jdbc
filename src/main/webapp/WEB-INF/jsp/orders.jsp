@@ -63,9 +63,7 @@
                         <th><fmt:message key="common.dateTime"/></th>
                         <th><fmt:message key="restaurants.nameAndAddress"/></th>
                         <th><fmt:message key="orders.total"/></th>
-                        <th><fmt:message key="orders.content"/></th>
-                        <th><fmt:message key="common.update"/></th>
-                        <th><fmt:message key="common.delete"/></th>
+                        <th class="col-sm-3"><fmt:message key="orders.executions"/></th>
                     </tr>
                     </thead>
                 </table>

@@ -78,11 +78,13 @@ public class OrderByDishAjaxController {
         orderService.save(order,user.getId(),restaurant.getId());
     }
 
-    /*delete order by Id*/
-    @DeleteMapping(value = "/{id}")
-    public void delete(@PathVariable("id") int id) {
-        log.info("delete " + id);
-        orderService.delete(id);
+    /*delete order by Id, userId and restaurantId*/
+    @DeleteMapping(value = "/{id}&{userId}&{restaurantId}")
+    public void delete(@PathVariable("id") int id,
+                       @PathVariable("userId") int userId,
+                       @PathVariable("restaurantId") int restaurantId) {
+        log.info("delete " + id + ", " + restaurantId );
+        orderService.delete(id, userId, restaurantId);
     }
 
 }

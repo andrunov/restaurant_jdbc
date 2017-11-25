@@ -5,7 +5,7 @@
     <jmxConfigurator/>
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${RESTAURANT_JDBC_ROOT}/log/restaurant.log</file>
+        <file>${RESTAURANT_FOR_HEROKU_ROOT}/log/restaurant.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${RESTAURANT_ROOT}/log/restaurant.%d{yyyy-MM-dd-HH-mm}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">

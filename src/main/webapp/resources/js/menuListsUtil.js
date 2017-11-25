@@ -79,19 +79,7 @@ $(function () {
                 "orderable": false,
                 "defaultContent": "",
                 "className": "dt-center",
-                "render": linkBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderEditMenuListBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderDeleteBtnWithFilter
+                "render": executionsBtns
             }
         ],
         "order": [
@@ -117,19 +105,17 @@ $(function () {
     });
 });
 
-/*function for link to dishes.jsp*/
-function linkBtn(data, type, row) {
+/*function for draw manage buttons*/
+function executionsBtns(data, type, row) {
     if (type == 'display') {
-        return '<a class="btn btn-primary" onclick=location.href="'+ goDishes + row.id +'">' +
-            '<span class="glyphicon glyphicon-list-alt"></span></a>';
-    }
-}
-
-/*render function draw button for update row*/
-function renderEditMenuListBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-primary" onclick="updateRow(' + row.id + ');">' +
-            '<span class="glyphicon glyphicon-time"></span></a>';
+        if (row.hasOrders) {
+            return '<div class="btn-group pull-left"><a class="btn btn-primary" onclick=location.href="' + goDishes + row.id + '">' + i18n["menuLists.content"] + '</a>' +
+                '<a class="btn btn-success" onclick="updateRow(' + row.id + ');">' + i18n["common.status"] + '</a>';
+        }else {
+            return '<div class="btn-group pull-left"><a class="btn btn-primary" onclick=location.href="' + goDishes + row.id + '">' + i18n["menuLists.content"] + '</a>' +
+                '<a class="btn btn-success" onclick="updateRow(' + row.id + ');">' + i18n["common.status"] + '</a>' +
+                '<a class="btn btn-danger" onclick="deleteRowWithFilter(' + row.id + ');">' + i18n["common.delete"] + '</a></div>';
+        }
     }
 }
 

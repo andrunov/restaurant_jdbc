@@ -53,7 +53,7 @@ public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
                 .usingGeneratedKeyColumns("id");
     }
 
-    /*Customise repository for Postgres*/
+    /*Customise repository for HSQLDB*/
 //    @Repository
 //    public static class Java8JdbcOrderRepositoryImpl extends JdbcOrderRepositoryImpl<LocalDateTime> {
 //        @Override
@@ -62,7 +62,7 @@ public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
 //        }
 //    }
 
-    /*Customise repository for HSQLDB*/
+    /*Customise repository for Postgres*/
     @Repository
     public static class TimestampJdbcOrderRepositoryImpl extends JdbcOrderRepositoryImpl<Timestamp> {
         @Override
@@ -236,6 +236,7 @@ public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
         List<Order> result = jdbcTemplate.query("SELECT o.* FROM orders AS o JOIN orders_dishes AS od ON o.id = od.order_id WHERE od.dish_id=? ORDER BY date_time DESC ", ROW_MAPPER,dishId);
         for (Order order : result) {
             setUser(order);
+            setRestaurant(order);
         }
         return result;
     }
@@ -247,6 +248,7 @@ public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
         List<Order> result = jdbcTemplate.query("SELECT o.* FROM orders AS o JOIN orders_dishes AS od ON o.id = od.order_id WHERE od.dish_id=? AND status=? ORDER BY date_time DESC ", ROW_MAPPER,dishId,status);
         for (Order order : result) {
             setUser(order);
+            setRestaurant(order);
         }
         return result;
     }
@@ -260,6 +262,7 @@ public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
         List<Order> result = jdbcTemplate.query("SELECT o.* FROM orders AS o JOIN orders_dishes AS od ON o.id = od.order_id WHERE od.dish_id=? AND date_time>=? AND date_time<=? ORDER BY date_time DESC  ", ROW_MAPPER, dishId, toDbDateTime(beginDate),toDbDateTime(endDate));
         for (Order order : result) {
             setUser(order);
+            setRestaurant(order);
         }
         return result;
     }
@@ -273,6 +276,7 @@ public abstract class JdbcOrderRepositoryImpl<T> implements OrderRepository {
         List<Order> result = jdbcTemplate.query("SELECT o.* FROM orders AS o JOIN orders_dishes AS od ON o.id = od.order_id WHERE od.dish_id=? AND  status=? AND date_time>=? AND date_time<=? ORDER BY date_time DESC", ROW_MAPPER, dishId, status, toDbDateTime(beginDate),toDbDateTime(endDate));
         for (Order order : result) {
             setUser(order);
+            setRestaurant(order);
         }
         return result;
     }

@@ -21,7 +21,6 @@ public interface UserService extends BaseService<User> {
     /*get user by email*/
     User getByEmail(String email) throws NotFoundException;
 
-
     /*evict service-layer cash of user-entities*/
     void evictCache();
 }

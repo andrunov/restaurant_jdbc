@@ -16,4 +16,7 @@ public interface RestaurantRepository extends BaseRepository<Restaurant> {
     /*get restaurant from database by Id with collection of
     *menuLists were issued by the restaurant*/
     Restaurant getWithMenuLists(int id);
+
+    /*saves several values exact to database */
+    void saveValuesToDB(int id);
 }

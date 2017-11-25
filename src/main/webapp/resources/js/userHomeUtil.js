@@ -20,10 +20,10 @@ var ajaxMenuListUrl = '/ajax/menuLists/byRestaurant/';
 var ajaxDishesUrl = '/ajax/dishes/byMenuList/';
 
 /*url for link to orders_dishes.jsp*/
-var goOrdersDishes = '/orders_dishes/';
+var goUserOrdersDetails = '/user_order_details/';
 
 /*url for redirect to orders_dishes.jsp after POST method*/
-var redirectOrdersDishes = 'orders_dishes';
+var redirectOrderDetails = 'user_order_details';
 
 /*variable links to main form DataTable represents orders in orders.jsp*/
 var datatableApi;
@@ -114,13 +114,7 @@ function ordersDataTableInit() {
                 "orderable": false,
                 "defaultContent": "",
                 "className": "dt-center",
-                "render": linkBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderDeleteBtn
+                "render": executionsBtns
             }
         ],
         "order": [
@@ -129,7 +123,18 @@ function ordersDataTableInit() {
                 "asc"
             ]
         ],
-        "createdRow": "",
+        /*customize row style depending of Status*/
+        "createdRow": function (row, data, dataIndex) {
+            if (data.status==="ACCEPTED") {
+                $(row).addClass('accepted');
+            }else if (data.status==="PREPARING") {
+                $(row).addClass("preparing");
+            }else if (data.status==="READY") {
+                $(row).addClass("ready");
+            }else if (data.status==="FINISHED") {
+                $(row).addClass("finished");
+            }
+        },
         "initComplete": makeEditable
     });
 }
@@ -281,11 +286,16 @@ $(function () {
     });
 });
 
-/*function for link to orders_dishes.jsp*/
-function linkBtn(data, type, row) {
+/*function for draw manage buttons*/
+function executionsBtns(data, type, row) {
     if (type == 'display') {
-        return '<a class="btn btn-primary" onclick=location.href="' +goOrdersDishes + row.id +'&'+  row.restaurant.id+'">' +
-            '<span class="glyphicon glyphicon-list-alt"></span></a>';
+        if (row.status == 'ACCEPTED') {
+            return '<div class="btn-group pull-left"><a class="btn btn-primary" onclick=location.href="' + goUserOrdersDetails + row.id + '&' + row.restaurant.id + '">' + i18n["common.details"] + '</a>' +
+                '<a class="btn btn-danger" onclick="deleteRow(' + row.id + ',' + row.restaurant.id + ');">' + i18n["common.delete"] + '</a></div>';
+        }
+        else {
+            return '<a class="btn btn-primary pull-left" onclick=location.href="' + goUserOrdersDetails + row.id + '&' + row.restaurant.id + '">' + i18n["common.details"] + '</a>';
+        }
     }
 }
 
@@ -300,8 +310,7 @@ function addOrder() {
 function selectRestaurantBtn(data, type, row) {
     if (type == 'display') {
         restaurantTitle = row.name+", "+row.address;
-        return '<a class="btn btn-primary" onclick="openMenuListWindow(' + row.id +',\''+ restaurantTitle +'\');">' +
-            '<span class="glyphicon glyphicon-ok"></span></a>';
+        return '<a class="btn btn-primary" onclick="openMenuListWindow(' + row.id +',\''+ restaurantTitle +'\');">' + i18n["common.select"] +'</span></a>';
     }
 }
 
@@ -329,8 +338,7 @@ function openMenuListWindow(id,restaurantTitle) {
 function selectMenuListBtn(data, type, row) {
     if (type == 'display') {
         menuListTitle = row.description +", "+row.dateTime;
-        return '<a class="btn btn-primary" onclick="openDishWindow('+row.id+',\''+menuListTitle+'\');">' +
-            '<span class="glyphicon glyphicon-ok"></span></a>';
+        return '<a class="btn btn-primary" onclick="openDishWindow('+row.id+',\''+menuListTitle+'\');">' + i18n["common.select"] +'</a>';
     }
 }
 
@@ -376,7 +384,7 @@ function complete() {
         success: function () {
             $('#selectDishes').modal('hide');
             // updateTable();
-            location.href = redirectOrdersDishes;
+            location.href = redirectOrderDetails;
         }
     });
 }
@@ -394,9 +402,9 @@ function getRequestParam(arr) {
 
 /*render function draw button for delete row*/
 function renderDeleteBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-danger" onclick="deleteRow(' + row.id +','+  row.restaurant.id+');">'+
-            '<span class="glyphicon glyphicon-remove-circle"></span></a>';
+    if (row.status=='ACCEPTED') {
+        return '<a class="btn btn-danger pull-left" onclick="deleteRow(' + row.id + ',' + row.restaurant.id + ');">' +
+                '<span class="glyphicon glyphicon-remove-circle"></span></a>';
     }
 }
 

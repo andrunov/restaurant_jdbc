@@ -31,7 +31,7 @@ $(function () {
             "dataSrc": ""
         },
         "paging": false,
-        "searching": false,
+        "searching": true,
         "info": true,
         "columns": [
             {
@@ -44,19 +44,7 @@ $(function () {
                 "orderable": false,
                 "defaultContent": "",
                 "className": "dt-center",
-                "render": linkBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderEditBtn
-            },
-            {
-                "orderable": false,
-                "defaultContent": "",
-                "className": "dt-center",
-                "render": renderDeleteBtn
+                "render": executionsBtns
             }
         ],
         "order": [
@@ -70,11 +58,19 @@ $(function () {
     });
 });
 
-/*function for link to menuLists.jsp*/
-function linkBtn(data, type, row) {
+/*function for draw manage buttons*/
+function executionsBtns(data, type, row) {
     if (type == 'display') {
-        return '<a class="btn btn-primary" onclick=location.href="'+ goMenuLists + row.id +'">' +
-            '<span class="glyphicon glyphicon-list-alt"></span></a>';
+        if (row.hasOrders) {
+            return '<div class="btn-group pull-left"><a class="btn btn-primary" onclick=location.href="' + goMenuLists + row.id + '">' + i18n["menuLists.title"] + '</a>' +
+                    '<a class="btn btn-success" onclick="updateRow(' + row.id + ');">' + i18n["common.update"] + '</a>';
+        }else {
+            return '<div class="btn-group pull-left"><a class="btn btn-primary" onclick=location.href="' + goMenuLists + row.id + '">' + i18n["menuLists.title"] + '</a>' +
+                    '<a class="btn btn-success" onclick="updateRow(' + row.id + ');">' + i18n["common.update"] + '</a>' +
+                    '<a class="btn btn-danger" onclick="deleteRow(' + row.id + ');">' + i18n["common.delete"] + '</a></div>';
+        }
     }
 }
+
+
 

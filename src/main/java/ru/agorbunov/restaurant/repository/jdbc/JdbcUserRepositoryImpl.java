@@ -54,18 +54,20 @@ public class JdbcUserRepositoryImpl implements UserRepository {
                 .addValue("name", user.getName())
                 .addValue("email", user.getEmail())
                 .addValue("password", user.getPassword())
-                .addValue("enabled", user.isEnabled())
-                .addValue("totalOrdersAmount", user.getTotalOrdersAmount());
+                .addValue("enabled", user.isEnabled());
 
         if (user.isNew()) {
+            map.addValue("hasOrders", false)
+               .addValue("totalOrdersAmount", 0);
             Number newKey = insertUser.executeAndReturnKey(map);
             user.setId(newKey.intValue());
             insertRoles(user);
+
         } else {
             deleteRoles(user);
             insertRoles(user);
             namedParameterJdbcTemplate.update(
-                    "UPDATE users SET name=:name, password=:password, email=:email, enabled=:enabled, totalOrdersAmount=:totalOrdersAmount WHERE id=:id", map);
+                    "UPDATE users SET name=:name, password=:password, email=:email, enabled=:enabled  WHERE id=:id", map);
         }
         return user;
     }
@@ -105,6 +107,7 @@ public class JdbcUserRepositoryImpl implements UserRepository {
             roles.add(Role.valueOf(rowSet.getString("role")));
         }
         List<User> users = jdbcTemplate.query("SELECT * FROM users", ROW_MAPPER);
+        int j;
         users.forEach(u -> u.setRoles(map.get(u.getId())));
         return users;
     }
@@ -164,10 +167,11 @@ public class JdbcUserRepositoryImpl implements UserRepository {
     }
 
     /*get total amount of user's orders from database
-    * and save it to database to users's field "totalOrdersAmount" */
+    * and save it to database to users's field "totalOrdersAmount",
+    * save hasOrders to database depending of existence orders of this user */
     @Transactional
     @Override
-    public void accountAndSaveTotalOrdersAmount(int id) {
-        jdbcTemplate.update("UPDATE USERS SET totalOrdersAmount=(SELECT SUM(TOTAL_PRICE) FROM orders  WHERE user_id=?) WHERE id=?",id,id);
+    public void saveValuesToDB(int id) {
+        jdbcTemplate.update("UPDATE USERS SET hasOrders=((SELECT (id) FROM orders  WHERE user_id=? LIMIT 1)NOTNULL),totalOrdersAmount=coalesce((SELECT SUM(TOTAL_PRICE) FROM orders  WHERE user_id=?),0) WHERE id=?",id,id,id);
     }
 }

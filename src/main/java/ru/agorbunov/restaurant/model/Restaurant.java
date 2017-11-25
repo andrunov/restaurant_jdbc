@@ -13,6 +13,9 @@ public class Restaurant extends BaseEntity {
     /*address of restaurant*/
     private String address;
 
+    /*marks that this restaurant has orders*/
+    private boolean hasOrders;
+
     /*menuLists of restaurant*/
     private List<MenuList> menuLists;
 
@@ -65,6 +68,14 @@ public class Restaurant extends BaseEntity {
 
     public void addOrder(Order order){
         this.orders.add(order);
+    }
+
+    public boolean isHasOrders() {
+        return hasOrders;
+    }
+
+    public void setHasOrders(boolean hasOrders) {
+        this.hasOrders = hasOrders;
     }
 
     @Override

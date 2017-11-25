@@ -37,7 +37,9 @@ public class UserServiceImplTest extends AbstractServiceTest {
     @Test
     public void save() throws Exception {
         service.save(USER_CREATED);
-        MATCHER.assertCollectionEquals(Arrays.asList(USER_01, USER_02, USER_03, USER_04, USER_05, USER_06, USER_CREATED), service.getAll());
+        MATCHER.assertCollectionEquals(
+                Arrays.asList(USER_01, USER_02, USER_03, USER_04, USER_05, USER_06, USER_CREATED),
+                service.getAll());
     }
 
     @Test

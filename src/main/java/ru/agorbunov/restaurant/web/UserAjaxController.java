@@ -45,6 +45,7 @@ public class UserAjaxController {
     @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable("id") int id) {
         log.info("delete " + id);
+        ValidationUtil.checkModificationAllowed(id);
         service.delete(id);
     }
 
@@ -67,6 +68,7 @@ public class UserAjaxController {
             log.info("create " + user);
             service.save(user);
         } else {
+            ValidationUtil.checkModificationAllowed(id);
             log.info("update " + user);
             service.save(user);
         }

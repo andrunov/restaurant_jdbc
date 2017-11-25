@@ -46,9 +46,7 @@
                         <th></th>
                         <th><fmt:message key="menuLists.description"/></th>
                         <th><fmt:message key="common.dateTime"/></th>
-                        <th><fmt:message key="menuLists.content"/></th>
-                        <th><fmt:message key="common.update"/></th>
-                        <th><fmt:message key="common.delete"/></th>
+                        <th width="25%"><fmt:message key="restaurants.executions"/></th>
                     </tr>
                     </thead>
                 </table>

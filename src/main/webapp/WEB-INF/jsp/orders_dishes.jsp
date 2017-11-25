@@ -16,8 +16,8 @@ or as finish 4-th step of creation new order--%>
 <div class="container">
     <div class="jumbotron">
         <div class="shadow">
-            <h3>${currentUser.name}, ${currentUser.email}</h3>
-            <p style="color: darkgreen"><fmt:message key="order.from"/>  ${localDate}; <span style="color: #b26301">${restaurant.name}, ${restaurant.address}</span> - <span style="color: darkred"><span id="totalPriceHeader">${totalPrice}</span> <fmt:message key="common.rub"/></span></p>
+            <h3><a href="/orders/${user.id}">${currentUser.name}</a>, ${currentUser.email}</h3>
+            <p style="color: darkgreen"><fmt:message key="order.from"/>  ${localDate}; <a href="/menuLists/${restaurant.id}"><span style="color: #b26301">${restaurant.name}, ${restaurant.address}</span></a>  - <span style="color: darkred"><span id="totalPriceHeader">${totalPrice}</span> <fmt:message key="common.rub"/></span></p>
             <div class="view-box">
                 <a class="btn btn-primary" type="button" onclick="openDishList()">
                     <span class="glyphicon glyphicon-plus-sign"></span>

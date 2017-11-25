@@ -10,6 +10,7 @@ import ru.agorbunov.restaurant.util.exception.NotFoundException;
 import ru.agorbunov.restaurant.util.exception.RefuseToUpdateException;
 import ru.agorbunov.restaurant.web.AuthorizedUser;
 
+import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -115,6 +116,13 @@ public class ValidationUtil {
     /*check that String[] array has elements */
     public static void checkEmptyArray(String[] stringArray){
         if ((stringArray == null)&&(stringArray.length==0)) throw  new EmptyListException("empty String array: " + stringArray);
+    }
+
+    /*forbidden modification for users with ids 100000, 100001 that use as credentials to login app*/
+    public static void checkModificationAllowed(Integer id) {
+        if (id < BaseEntity.START_SEQ + 2) {
+            throw new ValidationException("user modification forbidden");
+        }
     }
 
 }

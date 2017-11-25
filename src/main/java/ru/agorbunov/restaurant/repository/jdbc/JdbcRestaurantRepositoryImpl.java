@@ -52,6 +52,7 @@ public class JdbcRestaurantRepositoryImpl implements RestaurantRepository {
                 .addValue("address", restaurant.getAddress());
 
         if (restaurant.isNew()) {
+            map.addValue("hasOrders",0);
             Number newKey = insertRestaurant.executeAndReturnKey(map);
             restaurant.setId(newKey.intValue());
         } else {
@@ -111,5 +112,12 @@ public class JdbcRestaurantRepositoryImpl implements RestaurantRepository {
             r.setOrders(orders);
         }
         return r;
+    }
+
+    /* save hasOrders to database depending of existence orders of this user */
+    @Transactional
+    @Override
+    public void saveValuesToDB(int id) {
+        jdbcTemplate.update("UPDATE restaurants SET hasOrders=((SELECT (id) FROM orders  WHERE restaurant_id=? LIMIT 1)NOTNULL) WHERE id=?",id,id);
     }
 }

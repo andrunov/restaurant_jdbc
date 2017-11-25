@@ -21,6 +21,9 @@ public class User extends BaseEntity {
     /*enabled-disabled*/
     private boolean enabled;
 
+    /*marks that this user has orders*/
+    private boolean hasOrders;
+
     /*total amount of users orders*/
     private double totalOrdersAmount;
 
@@ -96,6 +99,14 @@ public class User extends BaseEntity {
 
     public void setTotalOrdersAmount(double totalOrdersAmount) {
         this.totalOrdersAmount = totalOrdersAmount;
+    }
+
+    public boolean isHasOrders() {
+        return hasOrders;
+    }
+
+    public void setHasOrders(boolean hasOrders) {
+        this.hasOrders = hasOrders;
     }
 
     @Override

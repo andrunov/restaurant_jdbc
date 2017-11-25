@@ -18,7 +18,7 @@
     <div class="jumbotron">
         <div class="shadow">
             <h3>${dish.description}: <fmt:message key="orders.list"/></h3>
-            <p style="color: darkgreen">${restaurant.name}, ${restaurant.address};  <span style="color: darkred">${menuList.description}, ${localDate}</span></p>
+            <p><a href="/menuLists/${restaurant.id}"><span style="color: darkgreen">${restaurant.name}, ${restaurant.address}</span></a>;  <a href="/dishes/${menuList.id}"><span style="color: darkred">${menuList.description}, ${localDate}</span></a></p>
             <table class="table" >
                 <tr>
                     <td>
@@ -58,9 +58,8 @@
                         <th><fmt:message key="common.dateTime"/></th>
                         <th><fmt:message key="users.name"/></th>
                         <th><fmt:message key="users.email"/></th>
-                        <th><fmt:message key="orders.content"/></th>
-                        <th><fmt:message key="common.update"/></th>
-                        <th><fmt:message key="common.delete"/></th>
+                        <th hidden></th>
+                        <th class="col-sm-3"><fmt:message key="orders.executions"/></th>
                     </tr>
                     </thead>
                 </table>

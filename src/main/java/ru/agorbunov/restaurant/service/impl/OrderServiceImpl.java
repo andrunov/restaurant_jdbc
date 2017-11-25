@@ -3,18 +3,18 @@ package ru.agorbunov.restaurant.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import ru.agorbunov.restaurant.model.Dish;
 import ru.agorbunov.restaurant.model.Order;
-import ru.agorbunov.restaurant.repository.OrderRepository;
-import ru.agorbunov.restaurant.repository.UserRepository;
+import ru.agorbunov.restaurant.repository.*;
 import ru.agorbunov.restaurant.service.OrderService;
 import ru.agorbunov.restaurant.util.ValidationUtil;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import static ru.agorbunov.restaurant.util.ValidationUtil.checkAcceptableUpdate;
-import static ru.agorbunov.restaurant.util.ValidationUtil.checkArrCompatibility;
-import static ru.agorbunov.restaurant.util.ValidationUtil.checkNotFoundWithId;
+import static ru.agorbunov.restaurant.util.ValidationUtil.*;
 
 /**
  * Class for exchange order-entity data between web and orderRepository layers
@@ -27,6 +27,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RestaurantRepository restaurantRepository;
+
+    @Autowired
+    private MenuListRepository menuListRepository;
+
+    @Autowired
+    private DishRepository dishRepository;
 
     /*save order if it is new entity and update if it is exist,
     *,int[] dishIds - Ids of dishes, int[] dishQuantityValues - dishes quantities,
@@ -43,8 +52,15 @@ public class OrderServiceImpl implements OrderService {
         ValidationUtil.checkEmpty(order.getDateTime(),"dateTime");
         ValidationUtil.checkEmptyArray(dishIds);
         ValidationUtil.checkEmptyArray(dishQuantityValues);
+        int[] oldDishIds = new int[0];
+        if (!order.isNew()){
+            oldDishIds = getDishIds(orderRepository.getWithDishes(order.getId(),userId,restaurantId).getDishes().keySet());
+        }
         Order result = checkNotFoundWithId(orderRepository.save(order,userId,restaurantId,dishIds,dishQuantityValues),order.getId());
-        userRepository.accountAndSaveTotalOrdersAmount(userId);
+        userRepository.saveValuesToDB(userId);
+        restaurantRepository.saveValuesToDB(restaurantId);
+        dishRepository.saveValuesToDB(getResultArr(oldDishIds,dishIds));
+        menuListRepository.saveValuesToDB(menuListRepository.getByDish(dishIds[0]).getId());
         return result;
     }
 
@@ -63,6 +79,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void delete(int id) {
         checkNotFoundWithId(orderRepository.delete(id),id);
+
     }
 
     /*get all orders*/
@@ -147,10 +164,42 @@ public class OrderServiceImpl implements OrderService {
     *  update totalOrdersAmount in corresponding user-entity in success case*/
     @Override
     public void delete(int id, int userId, int restaurantId) {
-        Order order = get(id,userId,restaurantId);
+        Order order = getWithDishes(id,userId,restaurantId);
         checkAcceptableUpdate(order);
         delete(id);
-        userRepository.accountAndSaveTotalOrdersAmount(userId);
+        userRepository.saveValuesToDB(userId);
+        restaurantRepository.saveValuesToDB(restaurantId);
+        int[] dishIds = getDishIds(order.getDishes().keySet());
+        dishRepository.saveValuesToDB(dishIds);
+        menuListRepository.saveValuesToDB(menuListRepository.getByDish(dishIds[0]).getId());
     }
 
+    /*transform Set<Dish> to int[] of dishes ids*/
+    private int[] getDishIds(Set<Dish> dishes){
+        int[] result = new int[dishes.size()];
+        int counter = 0;
+        for (Dish dish : dishes){
+            result[counter++] = dish.getId();
+        }
+        return result;
+    }
+
+    /*get result int[] containing all elements of two arrays int[] sending in parameters*/
+    private int[] getResultArr(int[] oldDishesIds, int[] newDishesIds){
+        List<Integer> list = new ArrayList<>();
+        for (Integer dishId : oldDishesIds){
+            list.add(dishId);
+        }
+
+        for (Integer dishId : newDishesIds){
+            if (!list.contains(dishId)){
+                list.add(dishId);
+            }
+        }
+        int[] result = new int[list.size()];
+        for (int index = 0; index < list.size(); index++){
+            result[index] = list.get(index);
+        }
+        return result;
+    }
 }

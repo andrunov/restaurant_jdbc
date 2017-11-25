@@ -20,7 +20,6 @@ public interface UserRepository extends BaseRepository<User> {
     *orders were made by the user*/
     User getWithOrders(int id);
 
-    /*get total amount of user's orders from database
-    * and save it to database to users's field "totalOrdersAmount" */
-    void accountAndSaveTotalOrdersAmount(int id);
+    /*saves several values exact to database */
+    void saveValuesToDB(int id);
 }

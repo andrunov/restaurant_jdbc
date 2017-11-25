@@ -6,6 +6,9 @@ package ru.agorbunov.restaurant.model;
  */
 public class BaseEntity {
 
+    /*entities with ids 100000, 100001 use as credentials to login app*/
+    public static final int START_SEQ = 100000;
+
     /*identifier of entity in database*/
     protected Integer id;
 

@@ -96,31 +96,6 @@ function saveWithFilter() {
     });
 }
 
-/*render function draw button for update row*/
-function renderEditBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-primary" onclick="updateRow(' + row.id + ');">' +
-            '<span class="glyphicon glyphicon-edit"></span></a>';
-    }
-}
-
-/*render function draw button for delete row*/
-function renderDeleteBtn(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-danger" onclick="deleteRow(' + row.id + ');">'+
-            '<span class="glyphicon glyphicon-remove-circle"></span></a>';
-    }
-}
-
-/*render function draw button for delete row
-* use in pages with currentFilterValue*/
-function renderDeleteBtnWithFilter(data, type, row) {
-    if (type == 'display') {
-        return '<a class="btn btn-danger" onclick="deleteRowWithFilter(' + row.id + ');">'+
-            '<span class="glyphicon glyphicon-remove-circle"></span></a>';
-    }
-}
-
 /*removes letter T from DateTime*/
 function formatDate(date) {
     return date.toString().replace('T', ' ').substr(0, 16);

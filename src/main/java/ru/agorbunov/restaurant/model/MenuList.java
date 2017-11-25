@@ -14,6 +14,9 @@ public class MenuList extends BaseEntity {
     /*restaurant to which the menuList is belong*/
     private Restaurant restaurant;
 
+    /*marks that this menuList has orders*/
+    private boolean hasOrders;
+
     /*List of dishes that were include in menuList*/
     private List<Dish> dishList;
 
@@ -71,6 +74,14 @@ public class MenuList extends BaseEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isHasOrders() {
+        return hasOrders;
+    }
+
+    public void setHasOrders(boolean hasOrders) {
+        this.hasOrders = hasOrders;
     }
 
     @Override

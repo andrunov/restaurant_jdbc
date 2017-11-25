@@ -31,9 +31,7 @@
                         <th><fmt:message key="users.email"/></th>
                         <th><fmt:message key="users.roles"/></th>
                         <th><fmt:message key="orders.amount"/></th>
-                        <th><fmt:message key="orders.title"/></th>
-                        <th><fmt:message key="common.update"/></th>
-                        <th><fmt:message key="common.delete"/></th>
+                        <th width="30%"><fmt:message key="users.executions"/></th>
                     </tr>
                     </thead>
                     </table>
